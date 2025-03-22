@@ -45,14 +45,14 @@ jobs:
       - name: build os.bin
         run: |
           make all
-      - name: run riscv tests
+      - name: run loongarch tests
         run: |
-          wget $IMG_URL_RISCV64 -O sdcard-riscv64.img.gz
-          gunzip sdcard-riscv64.img.gz
-          qemu-system-riscv64 -machine virt -kernel kernel-rv -m 2G -nographic -smp 4 -bios default -drive file=sdcard-riscv64.img,if=none,format=raw,id=x0 \
+          wget $IMG_URL_LOONGARCH64 -O sdcard-loongarch64.img.gz
+          gunzip sdcard-loongarch64.img.gz
+          qemu-system-loongarch64 -machine virt -kernel kernel-rv -m 2G -nographic -smp 4 -bios default -drive file=sdcard-loongarch64.img,if=none,format=raw,id=x0 \
                               -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -no-reboot -device virtio-net-device,netdev=net -netdev user,id=net \
                               -rtc base=utc \
-                              -drive file=disk.img,if=none,format=raw,id=x1 -device virtio-blk-device,drive=x1,bus=virtio-mmio-bus.1 | tee riscv_output.txt
+                              -drive file=disk.img,if=none,format=raw,id=x1 -device virtio-blk-device,drive=x1,bus=virtio-mmio-bus.1 | tee loongarch_output.txt
       - name: Download EvaluationScript
         run: |
           git clone ${{ env.SCRIPT_REPO }} .github/classroom
@@ -60,14 +60,14 @@ jobs:
         uses: oscontent25/os-autograding@master
         id: autogradingbusyboxglibc
         with:
-          outputfile: riscv_output.txt
+          outputfile: loongarch_output.txt
           scriptPath: ./.github/classroom/busybox-glibc
           max-score: 54
       - name: busyboxmusl-test
         uses: oscontent25/os-autograding@master
         id: autogradingbusyboxmusl
         with:
-          outputfile: riscv_output.txt
+          outputfile: loongarch_output.txt
           scriptPath: ./.github/classroom/busybox-musl
           max-score: 54
       - name: Autograding Reporter
